@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Daily Plate</title>
+  <meta name="description" content="A calm food diary. Woolworths, Coles and ALDI. Local-only. Not medical advice." />
+  <meta name="theme-color" content="#07080c" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #07080c;
+      --card: #10131b;
+      --ink: #f4efe6;
+      --muted: #b7b0a4;
+      --gold: #d4b46a;
+      --line: rgba(212,180,106,.22);
+      --teal: #7ec8c0;
+      --nav-h: 4.6rem;
+      --safe-b: env(safe-area-inset-bottom, 0px);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: Outfit, system-ui, sans-serif; }
+    body {
+      min-height: 100dvh;
+      background:
+        radial-gradient(900px 520px at 80% -8%, rgba(126,200,192,.11), transparent 55%),
+        radial-gradient(700px 420px at -12% 18%, rgba(212,180,106,.08), transparent 50%),
+        var(--bg);
+    }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    .app { width: min(42rem, 100%); margin: 0 auto; min-height: 100dvh; padding-bottom: calc(var(--nav-h) + var(--safe-b) + 1.2rem); }
+    .view { display: none; padding: 1.15rem 1.15rem 1.6rem; animation: rise .28s ease; }
+    .view.on { display: block; }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .top { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: .2rem 0 1rem; }
+    .brand { font-family: "Cormorant Garamond", serif; font-size: 1.55rem; letter-spacing: .03em; }
+    .brand em { font-style: normal; color: var(--gold); }
+    .ghost { background: transparent; border: 1px solid var(--line); color: var(--ink); border-radius: 999px; padding: .45rem .85rem; font-size: .88rem; }
+    h1 { font-family: "Cormorant Garamond", serif; font-size: clamp(1.85rem, 6vw, 2.55rem); line-height: 1.05; margin: 0 0 .55rem; font-weight: 600; }
+    h2 { font-family: "Cormorant Garamond", serif; font-size: 1.35rem; margin: 0 0 .45rem; font-weight: 600; }
+    p { color: var(--muted); line-height: 1.55; margin: 0 0 1rem; }
+    .kicker { color: var(--teal); font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; margin-bottom: .45rem; }
+    .card { background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 42%), var(--card); border: 1px solid var(--line); border-radius: 1.25rem; padding: 1.1rem 1.05rem; }
+    .stack { display: flex; flex-direction: column; gap: .75rem; }
+    .btn, .choice {
+      display: flex; align-items: center; justify-content: center; text-align: center;
+      min-height: 3.4rem; border-radius: 1.1rem; border: 1px solid var(--line);
+      background: rgba(255,255,255,.03); padding: .85rem 1rem; font-size: 1.02rem;
+    }
+    .btn-gold { background: var(--gold); color: #1a1408; border-color: var(--gold); font-weight: 600; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: .55rem; }
+    .btn-row .btn { flex: 1 1 8rem; }
+    .field {
+      width: 100%; background: #0b0e14; border: 1px solid var(--line); border-radius: 1rem;
+      padding: .9rem 1rem; outline: none;
+    }
+    .field:focus { border-color: var(--gold); }
+    .hero-num { font-family: "Cormorant Garamond", serif; font-size: clamp(2.4rem, 10vw, 3.4rem); line-height: 1; margin: .2rem 0; }
+    .hero-sub { color: var(--muted); font-size: .92rem; margin: 0; }
+    .macros { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-top: .9rem; }
+    .macro { text-align: center; border: 1px solid var(--line); border-radius: 1rem; padding: .7rem .3rem; }
+    .macro b { display: block; color: var(--gold); font-size: 1.05rem; }
+    .macro span { color: var(--muted); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; }
+    .meal { margin-top: .75rem; }
+    .meal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: .45rem; }
+    .food-row { display: flex; justify-content: space-between; gap: .7rem; padding: .55rem 0; border-bottom: 1px solid var(--line); }
+    .food-row:last-child { border-bottom: 0; }
+    .food-row button { background: none; border: 0; color: var(--muted); min-height: auto; padding: 0; }
+    .recents { display: flex; gap: .45rem; overflow-x: auto; padding-bottom: .3rem; }
+    .chip { flex: 0 0 auto; border: 1px solid var(--line); background: rgba(255,255,255,.03); border-radius: 999px; padding: .55rem .85rem; font-size: .9rem; }
+    .result { width: 100%; text-align: left; margin-bottom: .45rem; }
+    .result small { display: block; color: var(--muted); }
+    .glasses { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .glass { width: 2.6rem; height: 2.6rem; border-radius: 999px; border: 1px solid var(--line); background: transparent; }
+    .glass.on { background: rgba(126,200,192,.28); border-color: var(--teal); }
+    nav.dock {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+      padding: .35rem .4rem calc(.35rem + var(--safe-b));
+      background: rgba(7,8,12,.94); border-top: 1px solid var(--line);
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: .2rem;
+    }
+    nav.dock button {
+      background: transparent; border: 0; color: var(--muted); padding: .45rem .2rem .35rem;
+      border-radius: .8rem; font-size: .72rem; letter-spacing: .04em; text-transform: uppercase;
+    }
+    nav.dock button.on { color: var(--gold); background: rgba(212,180,106,.1); }
+    nav.dock b { display: block; font-size: 1.05rem; font-weight: 500; text-transform: none; letter-spacing: 0; margin-bottom: .05rem; }
+    #scan-video { width: 100%; border-radius: 1rem; background: #000; max-height: 16rem; object-fit: cover; }
+    .tiny { font-size: .86rem; color: var(--muted); }
+    label.kicker { display: block; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section id="onboard" class="view">
+      <div class="top"><div class="brand">Daily <em>Plate</em></div></div>
+      <p class="kicker">A quiet start</p>
+      <h1>Your plate. On this phone only.</h1>
+      <p>Woolworths, Coles and ALDI barcodes work. Nothing is sent to an account. Not medical advice.</p>
+      <div class="stack">
+        <div class="card">
+          <label class="kicker" for="name">What should we call you?</label>
+          <input class="field" id="name" maxlength="32" autocomplete="given-name" placeholder="First name — optional" />
+        </div>
+        <div class="card">
+          <label class="kicker" for="sex">Body used for the estimate</label>
+          <select class="field" id="sex">
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+          </select>
+        </div>
+        <div class="card">
+          <label class="kicker" for="age">Age</label>
+          <input class="field" id="age" type="number" inputmode="numeric" min="16" max="100" placeholder="Years" />
+        </div>
+        <div class="card">
+          <label class="kicker" for="height">Height (cm)</label>
+          <input class="field" id="height" type="number" inputmode="decimal" min="120" max="220" placeholder="cm" />
+        </div>
+        <div class="card">
+          <label class="kicker" for="weight">Weight (kg)</label>
+          <input class="field" id="weight" type="number" inputmode="decimal" min="35" max="250" step="0.1" placeholder="kg" />
+        </div>
+        <div class="card">
+          <label class="kicker" for="activity">Usual movement</label>
+          <select class="field" id="activity">
+            <option value="1.2">Mostly sitting</option>
+            <option value="1.375">A little walking</option>
+            <option value="1.55">Moving most days</option>
+            <option value="1.725">Hard work or training</option>
+          </select>
+        </div>
+        <button class="btn btn-gold" id="start-btn">Open Daily Plate</button>
+        <p class="tiny">This is a private food diary, not a dietitian and not a diagnosis.</p>
+      </div>
+    </section>
+
+    <section id="today" class="view">
+      <div class="top">
+        <div class="brand">Daily <em>Plate</em></div>
+        <button class="ghost" id="copy-yday">Copy yesterday</button>
+      </div>
+      <p class="kicker" id="today-kicker">Today</p>
+      <h1 id="greeting">Here is how today looks.</h1>
+      <div class="card">
+        <p class="kicker" style="margin:0">Eaten</p>
+        <div class="hero-num" id="eaten-kcal">0</div>
+        <p class="hero-sub" id="eaten-sub">of a gentle target</p>
+        <div class="macros">
+          <div class="macro"><b id="m-p">0g</b><span>Protein</span></div>
+          <div class="macro"><b id="m-c">0g</b><span>Carbs</span></div>
+          <div class="macro"><b id="m-f">0g</b><span>Fat</span></div>
+        </div>
+      </div>
+      <div id="meals"></div>
+      <button class="btn btn-gold" data-go="log" style="width:100%;margin-top:1rem">+ Log food</button>
+    </section>
+
+    <section id="log" class="view">
+      <div class="top">
+        <div class="brand">Log</div>
+        <button class="ghost" data-go="today">Today</button>
+      </div>
+      <p class="kicker">Where does this go?</p>
+      <select class="field" id="meal-pick">
+        <option value="breakfast">Breakfast</option>
+        <option value="lunch">Lunch</option>
+        <option value="dinner">Dinner</option>
+        <option value="snacks">Snacks</option>
+      </select>
+      <div class="btn-row" style="margin: .8rem 0">
+        <button class="btn" id="scan-btn">Scan barcode</button>
+        <button class="btn" id="custom-btn">My own food</button>
+      </div>
+      <video id="scan-video" playsinline muted hidden></video>
+      <p class="tiny" id="scan-note" hidden>Point at a Woolworths, Coles or ALDI barcode.</p>
+      <input class="field" id="search" placeholder="Search Weet-Bix, Farmdale, toast…" />
+      <p class="kicker" style="margin-top:1rem">Eat this again</p>
+      <div class="recents" id="recents"></div>
+      <div id="results" style="margin-top:.8rem"></div>
+      <div class="card stack" id="custom-box" hidden style="margin-top:.8rem">
+        <input class="field" id="c-name" placeholder="Food name" />
+        <input class="field" id="c-kcal" type="number" inputmode="decimal" placeholder="Calories (kcal)" />
+        <input class="field" id="c-p" type="number" inputmode="decimal" placeholder="Protein g" />
+        <input class="field" id="c-c" type="number" inputmode="decimal" placeholder="Carbs g" />
+        <input class="field" id="c-f" type="number" inputmode="decimal" placeholder="Fat g" />
+        <button class="btn btn-gold" id="c-save">Save and log</button>
+      </div>
+    </section>
+
+    <section id="body" class="view">
+      <div class="top">
+        <div class="brand">Body</div>
+        <button class="ghost" data-go="today">Today</button>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <p class="kicker">Water</p>
+          <h2 id="water-label">0 ml</h2>
+          <div class="glasses" id="glasses"></div>
+          <p class="tiny">Each glass is 250 ml. Tap to fill.</p>
+        </div>
+        <div class="card">
+          <p class="kicker">Weight today</p>
+          <input class="field" id="w-today" type="number" inputmode="decimal" step="0.1" placeholder="kg" />
+          <button class="btn btn-gold" id="w-save" style="width:100%;margin-top:.7rem">Save weight</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="me" class="view">
+      <div class="top">
+        <div class="brand">Daily <em>Plate</em></div>
+        <button class="ghost" data-go="today">Today</button>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <p class="kicker">Please read this</p>
+          <h2>A private food diary.</h2>
+          <p>Daily Plate is not medical advice, not a dietitian, and not for diagnosis. Numbers are estimates. Australian packaged foods from Woolworths, Coles and ALDI come from Open Food Facts when you scan.</p>
+        </div>
+        <div class="card">
+          <p class="kicker">This phone only</p>
+          <p>Your log stays in this browser. You can download it any time.</p>
+          <div class="btn-row">
+            <button class="btn" id="export-btn">Download my data</button>
+            <button class="btn" id="reset-btn">Start over</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <nav class="dock" aria-label="Main">
+    <button data-go="today"><b>⌂</b>Today</button>
+    <button data-go="log"><b>+</b>Log</button>
+    <button data-go="body"><b>○</b>Body</button>
+    <button data-go="me"><b>♡</b>About</button>
+  </nav>
+  <script src="app.js"></script>
+</body>
+</html>
