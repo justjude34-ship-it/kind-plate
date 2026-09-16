@@ -1,0 +1,19 @@
+{
+  "name": "Kind Plate",
+  "short_name": "Kind Plate",
+  "description": "A calm food diary. Local-only. Not medical advice. Buy once, own forever.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#07080c",
+  "theme_color": "#07080c",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
