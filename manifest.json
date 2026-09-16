@@ -1,7 +1,7 @@
 {
-  "name": "Kind Plate",
-  "short_name": "Kind Plate",
-  "description": "A calm food diary. Local-only. Not medical advice. Buy once, own forever.",
+  "name": "Daily Plate",
+  "short_name": "Daily Plate",
+  "description": "A calm food diary. Woolworths, Coles and ALDI. Local-only. Not medical advice. Buy once, own forever.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
