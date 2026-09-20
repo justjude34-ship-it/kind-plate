@@ -6,11 +6,15 @@
   <title>Daily Plate</title>
   <meta name="description" content="A calm food diary. Woolworths, Coles and ALDI. Local-only. Not medical advice." />
   <meta name="theme-color" content="#07080c" />
+  <meta property="og:title" content="Daily Plate" />
+  <meta property="og:description" content="A calm food diary. Woolworths, Coles and ALDI." />
+  <meta property="og:image" content="https://daily-plate-iota.vercel.app/hero.svg" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="preload" as="image" href="hero.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -64,6 +68,22 @@
       padding: .9rem 1rem; outline: none;
     }
     .field:focus { border-color: var(--gold); }
+    .hero-frame {
+      margin: 0 0 1.1rem;
+      border-radius: 1.25rem;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #0b0e14;
+    }
+    .hero-poster {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+    }
+    .hero-frame.compact { margin-bottom: .9rem; }
+    .hero-frame.compact .hero-poster { max-height: 11rem; }
     .hero-num { font-family: "Cormorant Garamond", serif; font-size: clamp(2.4rem, 10vw, 3.4rem); line-height: 1; margin: .2rem 0; }
     .hero-sub { color: var(--muted); font-size: .92rem; margin: 0; }
     .macros { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-top: .9rem; }
@@ -103,6 +123,9 @@
   <div class="app">
     <section id="onboard" class="view">
       <div class="top"><div class="brand">Daily <em>Plate</em></div></div>
+      <div class="hero-frame">
+        <img class="hero-poster" src="hero.svg" alt="A quiet breakfast plate — Weet-Bix, toast and fruit in morning light" width="1600" height="900" />
+      </div>
       <p class="kicker">A quiet start</p>
       <h1>Your plate. On this phone only.</h1>
       <p>Woolworths, Coles and ALDI barcodes work. Nothing is sent to an account. Not medical advice.</p>
@@ -148,6 +171,9 @@
       <div class="top">
         <div class="brand">Daily <em>Plate</em></div>
         <button class="ghost" id="copy-yday">Copy yesterday</button>
+      </div>
+      <div class="hero-frame compact">
+        <img class="hero-poster" src="hero.svg" alt="Weet-Bix, toast and fruit in morning light" width="1600" height="900" />
       </div>
       <p class="kicker" id="today-kicker">Today</p>
       <h1 id="greeting">Here is how today looks.</h1>
