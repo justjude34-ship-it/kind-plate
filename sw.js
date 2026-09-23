@@ -1,4 +1,4 @@
-const CACHE = "daily-plate-v3";
+const CACHE = "daily-plate-v4";
 const ASSETS = ["./", "./index.html", "./app.js", "./manifest.json", "./icon.svg", "./hero.svg"];
 
 self.addEventListener("install", (event) => {
